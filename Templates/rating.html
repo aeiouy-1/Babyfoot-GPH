@@ -3,33 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ranking</title>
+    <title>Player Ranking</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
     <style>
         .action-grid {
-          display: grid;
-          grid-template-columns: repeat(2, 1fr);
-          gap: 10px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
         } 
         .action {
-          background-color: lightgray;
-          height: 100px;
-          border-radius: 5px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
+            background-color: lightgray;
+            height: 100px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
-       
-      </style>
-          <body class="match-page">
-
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            text-align: center;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #2f61e9;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
 </head>
 <body>
-    <h1>Player ranking</h1>
-<p>See where you stand in the competition!<br>
+
+    <h1>Player Ranking</h1>
+    <p>See where you stand in the competition!<br>
     <span class="match-description">Please pick a date to view the ranking</span></p>
+
     {% set current_year = now.year %}
     {% set current_month = now.strftime('%m') %}
+
+    <!-- Sélection d'une date pour le classement -->
     <form method="GET" class="form-month">
         <label for="year" class="month-label">Year</label>
         <select name="year" id="year">
@@ -39,78 +58,66 @@
         </select>
         <label for="month" class="month-label">Month</label>
         <select name="month" id="month">
-            <option value="01" {% if month == "01" %}selected{% endif %}>January</option>
-            <option value="02" {% if month == "02" %}selected{% endif %}>February</option>
-            <option value="03" {% if month == "03" %}selected{% endif %}>March</option>
-            <option value="04" {% if month == "04" %}selected{% endif %}>April</option>
-            <option value="05" {% if month == "05" %}selected{% endif %}>May</option>
-            <option value="06" {% if month == "06" %}selected{% endif %}>June</option>
-            <option value="07" {% if month == "07" %}selected{% endif %}>July</option>
-            <option value="08" {% if month == "08" %}selected{% endif %}>August</option>
-            <option value="09" {% if month == "09" %}selected{% endif %}>September</option>
-            <option value="10" {% if month == "10" %}selected{% endif %}>October</option>
-            <option value="11" {% if month == "11" %}selected{% endif %}>November</option>
-            <option value="12" {% if month == "12" %}selected{% endif %}>December</option>
+            {% for num, name in [('01', 'January'), ('02', 'February'), ('03', 'March'), ('04', 'April'), ('05', 'May'), 
+                                 ('06', 'June'), ('07', 'July'), ('08', 'August'), ('09', 'September'), 
+                                 ('10', 'October'), ('11', 'November'), ('12', 'December')] %}
+                <option value="{{ num }}" {% if month == num %}selected{% endif %}>{{ name }}</option>
+            {% endfor %}
         </select>
- 
         <input type="submit" class="button" value="Submit">
     </form>
+
+    <!-- Tableau des classements -->
     <table class="rating-table">
-    <thead>
-        <tr>
-            <th>Rank</th>
-            <th>Name</th>
-            <th>Rating</th>
-            <th>Games</th>
-            <th>Last Game</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for player in player_ratings if player[2] >= 1 %}
+        <thead>
             <tr>
-                <td style="text-align: center;">
-                    {% if loop.index == 1 %}
-                        🥇
-                    {% elif loop.index == 2 %}
-                        🥈
-                    {% elif loop.index == 3 %}
-                        🥉
-                    {% elif loop.last %}
-                        🐢
-                    {% else %}
-                        {{ loop.index }}
-                    {% endif %}
-                </td>
-                <td>{{ player[0] }}</td>
-                <td>{{ player[1] }}</td>
-                <td style="text-align: center;">{{ player[2] }}</td>
-                <td>{{ player[3].strftime('%d-%m-%y %H:%M') }}</td>
+                <th>Rank</th>
+                <th>Name</th>
+                <th>Rating</th>
+                <th>Games</th>
+                <th>Last Game</th>
             </tr>
+        </thead>
+        <tbody>
+            {% for player in player_ratings if player[2] >= 1 %}
+                <tr>
+                    <td style="text-align: center;">
+                        {% if loop.index == 1 %}
+                            🥇
+                        {% elif loop.index == 2 %}
+                            🥈
+                        {% elif loop.index == 3 %}
+                            🥉
+                        {% elif loop.last %}
+                            🐢
+                        {% else %}
+                            {{ loop.index }}
+                        {% endif %}
+                    </td>
+                    <td>{{ player[0] }}</td>
+                    <td>{{ player[1] }}</td>
+                    <td style="text-align: center;">{{ player[2] }}</td>
+                    <td>{{ player[3].strftime('%d-%m-%y %H:%M') }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
-        {% endfor %}
-        
-    </tbody>
-</table>
-    
-    
+    <!-- Section "Do More" -->
+    <div class="do-more">
+        <h2>Explore more options</h2>
+        <p>Make the most of your game time with this all-in-one platform. Calculate your odds, compare your ranking, and upload your game results quickly and easily.</p>
+    </div>
 
-</div>
-</div>
+    <!-- Navigation rapide -->
+    <div class="action-grid">
+        <a href="/" class="action action2">Upload game</a>
+        <a href="/calculate_odds" class="action action2">Calculate odds</a>
+        <a href="/rating" class="action action3">Ranking</a>
+        <a href="/match_list" class="action action4">Match history</a>
+        <a href="/rating_evolution" class="action action3">Rating evolution</a>
+        <a href="/metrics" class="action action4">Players Metrics (new)</a>
+    </div>
 
-
-<!-- Do more section -->
-<div class="do-more">
-  <h2>Explore more options</h2>
-  <p>Make the most of your game time with this all-in-one platform. Calculate your odds, compare your ranking, and upload your game results quickly and easily.</p>
-</div>
-
-<div class="action-grid">
-    <a href="/" class="action action2">Upload game</a>
-    <a href="/calculate_odds" class="action action2">Calculate odds</a>
-    <a href="/rating" class="action action3">Ranking</a>
-    <a href="/match_list" class="action action4">Match history</a>
-    <a href="/rating_evolution" class="action action3">Rating evolution</a>
-    <a href="/metrics" class="action action4">Players Metrics (new)</a>
-</div>
 </body>
 </html>

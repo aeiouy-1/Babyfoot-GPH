@@ -3,126 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Match upploaded</title>
+    <title>Match Uploaded</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    
     <style>
         .action-grid {
-          display: grid;
-          grid-template-columns: repeat(2, 1fr);
-          gap: 10px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
         }
         .action {
-          background-color: lightgray;
-          height: 100px;
-          border-radius: 5px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
+            background-color: lightgray;
+            height: 100px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
-      </style>
-    <body class="thank-you-page">
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            text-align: center;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #2f61e9;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
 </head>
-<body>
-    <h1>Match Uploaded!</h1>
+<body class="thank-you-page">
 
+    <h1>Match Uploaded!</h1>
     <p>Thank you for uploading the match details. <br>Here is a summary of the match:</p>
     <br>
-    
-  <!-- First table -->
-<table>
-    <tr>
-        <th>Attribute</th>
-        <th>Value</th>
-    </tr>
-    <tr>
-        <td>Match ID:</td>
-        <td>{{ last_match[0] }}</td>
-    </tr>
-    <tr>
-        <td>Date:</td>
-        <td>{{ last_match[1].strftime('%d/%m/%Y %H:%M:%S') }}</td>
-    </tr>
-    <tr>
-        <td>Winning Team:</td>
-        <td>{{ last_match[2] }} & {{ last_match[3] }} (score: {{ last_match[6] }})</td>
-    </tr>
-    <tr>
-        <td>Losing Team:</td>
-        <td>{{ last_match[4] }} & {{ last_match[5] }} (score: {{ last_match[7] }})</td>
-    </tr>
-</table>
-<br>
-<!-- Second table -->
-<table>
-    <tr>
-        <th>Players </th>
-        <th>Old Rating</th>
-        <th>Evolution</th>
-        <th>New Rating</th>
 
-    </tr>
-    {% for player in player_rat_bef_and_aft %}
-    <tr>
-        <td>{{ player[1] }}</td>
-        <td style="text-align:center">{{ player[2] }}</td>
-        <td style="text-align:center">{% if player[3] - player[2] > 0 %}+{% endif %}{{ player[3] - player[2] }}</td>
-        <td style="text-align:center">{{ player[3] }}</td>
-      </tr>
-    {% endfor %}
-</table>
+    <!-- First table -->
+    <table>
+        <tr>
+            <th>Attribute</th>
+            <th>Value</th>
+        </tr>
+        <tr>
+            <td>Match ID:</td>
+            <td>{{ last_match[0] }}</td>
+        </tr>
+        <tr>
+            <td>Date:</td>
+            <td>{{ last_match[1].strftime('%d/%m/%Y %H:%M:%S') }}</td>
+        </tr>
+        <tr>
+            <td>Winner:</td>
+            <td>{{ last_match[2] }} (Score: {{ last_match[4] }})</td>
+        </tr>
+        <tr>
+            <td>Loser:</td>
+            <td>{{ last_match[3] }} (Score: {{ last_match[5] }})</td>
+        </tr>
+    </table>
+    <br>
 
+    <!-- Second table -->
+    <table>
+        <tr>
+            <th>Player</th>
+            <th>Old Rating</th>
+            <th>Evolution</th>
+            <th>New Rating</th>
+        </tr>
+        {% for player in player_rat_bef_and_aft %}
+        <tr>
+            <td>{{ player[1] }}</td>
+            <td style="text-align:center">{{ player[2] }}</td>
+            <td style="text-align:center">
+                {% if player[3] - player[2] > 0 %}+{% endif %}{{ player[3] - player[2] }}
+            </td>
+            <td style="text-align:center">{{ player[3] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
 
+    <p>If you need to make any corrections, you can delete the match by clicking the button below:</p>
 
-    
-    
-        <p>If you need to make any corrections, you can delete the match by clicking the button below:</p>
-    
-        <form class="thank-you-form" id="deleteForm" action="{{ url_for('delete_last_match_route') }}" method="post">
-            <button type="submit" id="deleteButton">Delete Last Match</button>
-        </form>
-    
-    
+    <form class="thank-you-form" id="deleteForm" action="{{ url_for('delete_last_match_route') }}" method="post">
+        <button type="submit" id="deleteButton">Delete Last Match</button>
+    </form>
+
     <script>
         var deleteForm = document.getElementById("deleteForm");
         var deleteButton = document.getElementById("deleteButton");
         
         deleteForm.addEventListener("submit", function(event) {
-            // Prevent form submission
-            event.preventDefault();
+            event.preventDefault(); // Prevent form submission
             
-            // Confirm deletion
             var confirmed = confirm("Are you sure you want to delete the last match?");
-            
             if (confirmed) {
-                // Disable the delete button to prevent multiple submissions
-                deleteButton.disabled = true;
+                deleteButton.disabled = true; // Disable the delete button to prevent multiple submissions
+                deleteForm.submit(); // Submit the form
                 
-                // Submit the form
-                deleteForm.submit();
-                
-                // Display a success message and redirect to the main page
                 alert("Match deleted successfully");
-                window.location.replace('/'); // Replace with the main page URL
+                window.location.replace('/'); // Redirect to home page
             }
         });
     </script>
-    <!-- Do more section -->
-<div class="do-more">
-    <h2>Explore more options</h2>
-    <p>Make the most of your game time with this all-in-one platform. Calculate your odds, compare your ranking, and upload your game results quickly and easily.</p>
-</div>
-  
-  
-<div class="action-grid">
-    <a href="/" class="action action2">Upload game</a>
-    <a href="/calculate_odds" class="action action2">Calculate odds</a>
-    <a href="/rating" class="action action3">Ranking</a>
-    <a href="/match_list" class="action action4">Match history</a>
-    <a href="/rating_evolution" class="action action3">Rating evolution</a>
-    <a href="/metrics" class="action action4">Players Metrics (new)</a>
-  </div>
-  
-  </div>
-  </body>
 
+    <!-- Do more section -->
+    <div class="do-more">
+        <h2>Explore more options</h2>
+        <p>Make the most of your game time with this all-in-one platform. Calculate your odds, compare your ranking, and upload your game results quickly and easily.</p>
+    </div>
+
+    <!-- Navigation rapide -->
+    <div class="action-grid">
+        <a href="/" class="action action2">Upload game</a>
+        <a href="/calculate_odds" class="action action2">Calculate odds</a>
+        <a href="/rating" class="action action3">Ranking</a>
+        <a href="/match_list" class="action action4">Match history</a>
+        <a href="/rating_evolution" class="action action3">Rating evolution</a>
+        <a href="/metrics" class="action action4">Players Metrics (new)</a>
+    </div>
+
+</body>
 </html>

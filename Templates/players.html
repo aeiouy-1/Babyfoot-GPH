@@ -5,39 +5,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Player List</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
     <style>
         .action-grid {
-          display: grid;
-          grid-template-columns: repeat(2, 1fr);
-          gap: 10px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
         } 
         .action {
-          background-color: lightgray;
-          height: 100px;
-          border-radius: 5px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
+            background-color: lightgray;
+            height: 100px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         .action:nth-child(5) {
-        background: linear-gradient(141.13deg, #2f61e9 26.29%, #1b42ab 100%);
-        color: #fff;
+            background: linear-gradient(141.13deg, #2f61e9 26.29%, #1b42ab 100%);
+            color: #fff;
         }
-
         .action:nth-child(6) {
-        background: linear-gradient(141.13deg, #3077e2 26.29%, #36a5ef 100%);
-        color: #fff;
-         }
-
-     </style>
-          <body class="match-page">
-             
-                </style>
-
+            background: linear-gradient(141.13deg, #3077e2 26.29%, #36a5ef 100%);
+            color: #fff;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #2f61e9;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
 </head>
+
 <body>
-    <h1>Player list</h1>
-    <p class="match-description">Please select the player to update</p>
+    <h1>Player List</h1>
+    <p class="match-description">Please select a player to update</p>
     
     <br>
     <table>
@@ -48,16 +60,15 @@
             <th>Active</th>
             <th>Actions</th>
         </tr>
-        {% for Players in players_list %}
+        {% for player in players_list %}
         <tr>
-            <td>{{ Players[0] }}</td>
-            <td>{{ Players[1] }}</td>
-            <td>{{ Players[2] }}</td>
-            <td>{{ Players[3] }}</td>
-            <td><a href="{{ url_for('edit_player', player_id=Players[0]) }}">Edit</a></td>
+            <td>{{ player[0] }}</td>
+            <td>{{ player[1] }}</td>
+            <td>{{ player[2] }}</td>
+            <td>{% if player[3] %} ✅ {% else %} ❌ {% endif %}</td>
+            <td><a href="{{ url_for('edit_player', player_id=player[0]) }}">Edit</a></td>
         </tr>
-    {% endfor %}
-    
+        {% endfor %}
     </table>
 
     <div class="do-more">
@@ -67,11 +78,10 @@
 
     <div class="action-grid">
         <a href="/" class="action action1">Upload game</a>
-        <a href="calculate_odds" class="action action2">Calculate odds</a>
+        <a href="/calculate_odds" class="action action2">Calculate odds</a>
         <a href="/add_player" class="action action3">Add player</a>
         <a href="/players" class="action action4">Player list</a>
         <a href="/delete_match" class="action action5">Delete Match</a>
-        <a href="/players" class="action action6">Player list</a>
         <a href="/rating_evolution" class="action action3">Rating evolution</a>
         <a href="/" class="action action4">Coming soon</a>
     </div>

@@ -25,14 +25,36 @@ import pytz
 app = Flask(__name__, template_folder='Templates')
 
 
-def get_player_match_id_by_timestamp_and_by_player_id(player_id, match_date, cur):
-    # Requête pour récupérer l'ID de la relation dans la table PlayerMatch
+def get_player_match_id_by_timestamp_and_by_player_id(player1_id, player2_id, match_date, cur):
+    """
+    Récupère les IDs des relations joueur-match pour un match 1v1 à une date donnée.
+    
+    Paramètres :
+      - player1_id : ID du premier joueur
+      - player2_id : ID du second joueur
+      - match_date : date et heure du match (format string, ex. '2025-03-02 21:32:46')
+      - cur : curseur de la connexion à la base de données
+      
+    Retourne :
+      - Un tuple (player1_match_id, player2_match_id)
+    """
+    # Récupérer l'ID de la relation pour le premier joueur
     cur.execute(
-        "SELECT PlayerMatch.player_match_id FROM Match JOIN PlayerMatch ON Match.match_id = PlayerMatch.match_id WHERE PlayerMatch.player_id = %s AND Match.match_timestamp = %s;",
-        (player_id, match_date)
+        "SELECT PlayerMatch.player_match_id FROM Match JOIN PlayerMatch ON Match.match_id = PlayerMatch.match_id "
+        "WHERE PlayerMatch.player_id = %s AND Match.match_timestamp = %s;",
+        (player1_id, match_date)
     )
-    result = cur.fetchone()
-    return result[0] if result is not None else None
+    player1_match_id = cur.fetchone()[0]
+    
+    # Récupérer l'ID de la relation pour le second joueur
+    cur.execute(
+        "SELECT PlayerMatch.player_match_id FROM Match JOIN PlayerMatch ON Match.match_id = PlayerMatch.match_id "
+        "WHERE PlayerMatch.player_id = %s AND Match.match_timestamp = %s;",
+        (player2_id, match_date)
+    )
+    player2_match_id = cur.fetchone()[0]
+    
+    return (player1_match_id, player2_match_id)
 
 # Get the player ID of the players playing a match
 def get_player_ids(player1_name, player2_name, cur):

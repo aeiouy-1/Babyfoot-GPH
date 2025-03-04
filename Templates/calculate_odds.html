@@ -2,16 +2,14 @@
 <html>
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css')}}">
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css')}}">
-  <link rel="icon" type="image/png" sizes="192x192" href="{{ url_for('static', filename='icons/android-chrome-192x192.png')}}">
-  <link rel="icon" type="image/png" sizes="512x512" href="{{ url_for('static', filename='icons/android-chrome-512x512.png')}}">
-  <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='icons/apple-touch-icon.png')}}">
-  <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='icons/favicon-32x32.png')}}">
-  <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='icons/favicon-16x16.png')}}">
-  <link rel="shortcut icon" href="{{ url_for('static', filename='icons/favicon.ico')}}">
-
-  <title>Calculate odds</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="icon" type="image/png" sizes="192x192" href="{{ url_for('static', filename='icons/android-chrome-192x192.png') }}">
+  <link rel="icon" type="image/png" sizes="512x512" href="{{ url_for('static', filename='icons/android-chrome-512x512.png') }}">
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='icons/apple-touch-icon.png') }}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='icons/favicon-32x32.png') }}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='icons/favicon-16x16.png') }}">
+  <link rel="shortcut icon" href="{{ url_for('static', filename='icons/favicon.ico') }}">
+  <title>Calculate odds - 1v1</title>
   <style>
     .action-grid {
       display: grid;
@@ -25,123 +23,90 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      text-decoration: none;
+      color: black;
+      font-size: 18px;
     }
   </style>
+  <script>
+    // Validation du formulaire pour s'assurer que les deux joueurs sont sélectionnés
+    function validateForm() {
+      const player1 = document.getElementById('player1_name').value.trim();
+      const player2 = document.getElementById('player2_name').value.trim();
+      if (!player1 || !player2) {
+        alert('Please select both players.');
+        return false;
+      }
+      return true;
+    }
+  </script>
 </head>
 <body>
-  <h1>Calculate odds</h1>
+  <h1>Calculate odds (1v1)</h1>
 
-  <form method="POST" action="/calculate_odds">
-    <!-- Team 1 Label -->
-  <label for="player1_name" class="team-label">Team 1 </label>
-  <select id="player1_name" name="player1_name">
+  <form method="POST" action="/calculate_odds" onsubmit="return validateForm()">
+    <!-- Sélection du premier joueur -->
+    <label for="player1_name" class="team-label">Player 1</label>
+    <select id="player1_name" name="player1_name">
       <option value="" {% if not player1_name %}selected{% endif %} disabled>Select player 1</option>
       {% for player in players %}
           <option value="{{ player }}" {% if player == player1_name %}selected{% endif %}>{{ player }}</option>
       {% endfor %}
-  </select>
-  
-  <br>
-  <select id="player2_name" name="player2_name">
+    </select>
+    <br>
+
+    <!-- Sélection du second joueur -->
+    <label for="player2_name" class="team-label">Player 2</label>
+    <select id="player2_name" name="player2_name">
       <option value="" {% if not player2_name %}selected{% endif %} disabled>Select player 2</option>
       {% for player in players %}
           <option value="{{ player }}" {% if player == player2_name %}selected{% endif %}>{{ player }}</option>
       {% endfor %}
     </select>
-    {% if team1_expected_score is defined and team1_expected_scoreQuotation is defined %}
-        <table class="centered-table">
-          <tr>
-            <td class="chance-of-winning">🏆 Chance of winning: {{ team1_expected_score }}% </td>
-          </tr>
-          <tr>
-            <td class="chance-of-winning">💰 Odd: {{ team1_expected_scoreQuotation }} </td>
+    <br>
 
-          </tr>
-        </table>
+    <!-- Affichage conditionnel des résultats (cotes, scores attendus) si définis -->
+    {% if expected1 is defined and odd1 is defined %}
+      <table class="centered-table">
+        <tr>
+          <td class="chance-of-winning">🏆 Chance of winning for Player 1: {{ expected1 }}%</td>
+        </tr>
+        <tr>
+          <td class="chance-of-winning">💰 Odd: {{ odd1 }}</td>
+        </tr>
+      </table>
+    {% endif %}
+    <br>
     
-        {% endif %}
-  
-  <br>
-    <!-- Team 1 Label -->
-  <label for="player3_name" class="team-label">Team 2 </label>
-  <select id="player3_name" name="player3_name">
-      <option value="" {% if not player2_name %}selected{% endif %} disabled>Select player 3</option>
-      {% for player in players %}
-          <option value="{{ player }}" {% if player == player3_name %}selected{% endif %}>{{ player }}</option>
-      {% endfor %}
-  </select>
-  
-  <br>
-  <select id="player4_name" name="player4_name">
-      <option value="" {% if not player4_name %}selected{% endif %} disabled>Select player 4</option>
-      {% for player in players %}
-          <option value="{{ player }}" {% if player == player4_name %}selected{% endif %}>{{ player }}</option>
-      {% endfor %}
-    </select>
-    {% if team1_expected_score is defined and team1_expected_scoreQuotation is defined %}
-        <table class="centered-table">
-          <tr>
-            <td class="chance-of-winning">🏆 Chance of winning: {{ team2_expected_score }}% </td>
-          </tr>
-          <tr>
-            <td class="chance-of-winning">💰 Odd: {{ team2_expected_scoreQuotation }} </td>
-
-          </tr>
-        </table>
-    
-        {% endif %}
-  
-  <br>
-  
-    <input type="submit" value="calculate odds">
+    <input type="submit" value="Calculate odds">
   </form>
-  
 
-<!-- Do more section -->
-<div class="do-more">
-  <h2>Explore more options</h2>
-  <p>Make the most of your game time with this all-in-one platform. Calculate your odds, compare your ranking, and upload your game results quickly and easily.</p>
-</div>
+  <!-- Section "Do more" -->
+  <div class="do-more">
+    <h2>Explore more options</h2>
+    <p>Make the most of your game time with this all-in-one platform. Calculate your odds, compare your ranking, and upload your match results quickly and easily.</p>
+  </div>
 
+  <!-- Menu d'actions -->
+  <div class="action-grid">
+    <a href="/" class="action action1">Upload Match</a>
+    <a href="/calculate_odds" class="action action2">Calculate odds</a>
+    <a href="/rating" class="action action3">Ranking</a>
+    <a href="/match_list" class="action action4">Match history</a>
+    <a href="/rating_evolution" class="action action5">Rating evolution</a>
+    <a href="/metrics" class="action action6">Player Metrics (new)</a>
+  </div>
 
-
-
-<div class="action-grid">
-  <a href="/" class="action action2">Upload game</a>
-  <a href="/calculate_odds" class="action action2">Calculate odds</a>
-  <a href="/rating" class="action action3">Ranking</a>
-  <a href="/match_list" class="action action4">Match history</a>
-  <a href="/rating_evolution" class="action action3">Rating evolution</a>
-  <a href="/metrics" class="action action4">Players Metrics (new)</a>
-</div>
-
-
-</div>
-
-</div>
-<script>
-  document.querySelector('form').addEventListener('submit', function(event) {
-  // Prevent form submission until it's validated
-  event.preventDefault();
-
-  // Get form inputs
-  const player1Name = document.getElementById('player1_name').value.trim();
-  const player2Name = document.getElementById('player2_name').value.trim();
-  const player3Name = document.getElementById('player3_name').value.trim();
-  const player4Name = document.getElementById('player4_name').value.trim();
-
-  // Check if all player names are selected
-  if (!player1Name || !player2Name || !player3Name || !player4Name) {
-    alert('Please select all player names');
-    return;
-  }
-
-
-
-  // If all validation passes, submit the form
-  event.target.submit();
-});
-
-</script>
+  <script>
+    // Validation du formulaire avec écouteur d'événement (optionnel si déjà fait via onsubmit)
+    document.querySelector('form').addEventListener('submit', function(event) {
+      const player1 = document.getElementById('player1_name').value.trim();
+      const player2 = document.getElementById('player2_name').value.trim();
+      if (!player1 || !player2) {
+        alert('Please select both players.');
+        event.preventDefault();
+      }
+    });
+  </script>
 </body>
 </html>

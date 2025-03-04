@@ -2,8 +2,14 @@
 <html>
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css')}}">
-  <title>Upload a game</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="icon" type="image/png" sizes="192x192" href="{{ url_for('static', filename='icons/android-chrome-192x192.png') }}">
+  <link rel="icon" type="image/png" sizes="512x512" href="{{ url_for('static', filename='icons/android-chrome-512x512.png') }}">
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='icons/apple-touch-icon.png') }}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='icons/favicon-32x32.png') }}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='icons/favicon-16x16.png') }}">
+  <link rel="shortcut icon" href="{{ url_for('static', filename='icons/favicon.ico') }}">
+  <title>Upload a game - 1v1 (max score 10)</title>
   <style>
     .action-grid {
       display: grid;
@@ -17,140 +23,118 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      text-decoration: none;
+      color: black;
+      font-size: 18px;
     }
   </style>
+  <script>
+    // Fonction de validation du formulaire pour un match 1v1 avec score maximal de 10
+    function validateForm() {
+      const player1 = document.getElementById("player1_name").value;
+      const player2 = document.getElementById("player2_name").value;
+      const score1 = document.getElementById("player1_score").value;
+      const score2 = document.getElementById("player2_score").value;
+      
+      if (!player1 || !player2) {
+        alert("Please select both players.");
+        return false;
+      }
+      
+      if (score1 === "" || score2 === "") {
+        alert("Please enter scores for both players.");
+        return false;
+      }
+      
+      // Convertir les scores en entiers
+      const s1 = parseInt(score1);
+      const s2 = parseInt(score2);
+      
+      // Vérifier que les scores sont entre 0 et 10
+      if (s1 < 0 || s2 < 0 || s1 > 10 || s2 > 10) {
+        alert("Scores must be between 0 and 10.");
+        return false;
+      }
+      
+      // Les scores ne doivent pas être égaux (il doit y avoir un vainqueur)
+      if (s1 === s2) {
+        alert("Scores cannot be equal.");
+        return false;
+      }
+      
+      // Au moins l'un des scores doit être égal à 10 (pour déterminer le vainqueur)
+      if (s1 !== 10 && s2 !== 10) {
+        alert("One of the scores must be equal to 10.");
+        return false;
+      }
+      
+      return true;
+    }
+  </script>
 </head>
 <body>
-  <h1>Upload a game</h1>
+  <h1>Upload a game (1v1)</h1>
 
-  <form method="POST" id="game_form">
-    <!-- Team 1 Label -->
-    <label for="player1_name" class="team-label">Team 1 </label>
+  <form method="POST" id="game_form" action="/upload_game" onsubmit="return validateForm()">
+    <!-- Sélection du premier joueur -->
+    <label for="player1_name" class="team-label">Player 1</label>
     <select id="player1_name" name="player1_name">
-        <option value="" disabled selected>Select player 1</option>
-        {% for player in players %}
-            <option value="{{ player }}">{{ player }}</option>
-        {% endfor %}
+      <option value="" disabled selected>Select player 1</option>
+      {% for player in players %}
+         <option value="{{ player }}">{{ player }}</option>
+      {% endfor %}
     </select>
     <br>
+    
+    <!-- Saisie du score pour le premier joueur (max 10) -->
+    <label for="player1_score" class="score-label">Score for Player 1</label>
+    <input type="number" id="player1_score" name="player1_score" min="0" max="10" inputmode="numeric">
+    <br>
+    
+    <!-- Sélection du second joueur -->
+    <label for="player2_name" class="team-label">Player 2</label>
     <select id="player2_name" name="player2_name">
-        <option value="" disabled selected>Select player 2</option>
-        {% for player in players %}
-            <option value="{{ player }}">{{ player }}</option>
-        {% endfor %}
-    </select>
-    <!-- Team 1 Score Label -->
-    <label for="team1_score" class="score-label">Score</label>
-    <input type="number" id="team1_score" name="team1_score" value="" min="0" max="11" inputmode="numeric">
-    <br>
-    <!-- Team 2 Label -->
-    <label for="player1_name" class="team-label">Team 2 </label>
-    <select id="player3_name" name="player3_name">
-        <option value="" disabled selected>Select player 3</option>
-        {% for player in players %}
-            <option value="{{ player }}">{{ player }}</option>
-        {% endfor %}
+      <option value="" disabled selected>Select player 2</option>
+      {% for player in players %}
+         <option value="{{ player }}">{{ player }}</option>
+      {% endfor %}
     </select>
     <br>
-    <select id="player4_name" name="player4_name">
-        <option value="" disabled selected>Select player 4</option>
-        {% for player in players %}
-            <option value="{{ player }}">{{ player }}</option>
-        {% endfor %}
-    </select>
-    <!-- Team 2 Score Label -->
-    <label for="team2_score" class="score-label">Score</label>
-    <input type="number" id="team2_score" name="team2_score" value="" min="0" max="11" inputmode="numeric">
-    <!-- Game Date Label -->
+    
+    <!-- Saisie du score pour le second joueur (max 10) -->
+    <label for="player2_score" class="score-label">Score for Player 2</label>
+    <input type="number" id="player2_score" name="player2_score" min="0" max="10" inputmode="numeric">
+    <br>
+    
+    <!-- Saisie de la date du match -->
     <label for="game_date" class="date-label">Date</label>
-        <input type="date" id="game_date" name="game_date" value="">
-        <script>
-          // Get today's date and format it as yyyy-mm-dd
-          var today = new Date();
-          var year = today.getFullYear();
-          var month = ('0' + (today.getMonth() + 1)).slice(-2);
-          var day = ('0' + today.getDate()).slice(-2);
-          var formattedDate = year + '-' + month + '-' + day;
-          // Set the default value of the game_date input to today's date
-          document.getElementById("game_date").value = formattedDate;
-      
-          function validateForm() {
-              // Get the selected player names
-              const player1 = document.getElementById("player1_name").value;
-              const player2 = document.getElementById("player2_name").value;
-              const player3 = document.getElementById("player3_name").value;
-              const player4 = document.getElementById("player4_name").value;
-      
-              // Check if all four players are different
-              if (player1 === player2 || player1 === player3 || player1 === player4 || player2 === player3 || player2 === player4 || player3 === player4) {
-                  alert("Please select four different players.");
-                  return false;
-              }
-      
-              // Get the scores
-              const team1_score = document.getElementsByName("team1_score")[0].value;
-              const team2_score = document.getElementsByName("team2_score")[0].value;
-      
-              // Check if the scores are integers between 0 and 11
-              if (!Number.isInteger(+team1_score) || !Number.isInteger(+team2_score)) {
-                  alert("Scores must be integers between 0 and 11.");
-                  return false;
-              } 
-      
-              // Check if the scores are not equal
-              if (team1_score === team2_score) {
-                  alert("Scores cannot be equal.");
-                  return false;
-              }
-      
-              // Check if the scores are not greater than 11
-              if (team1_score > 11 || team2_score > 11) {
-                  alert("Scores cannot be greater than 11.");
-                  return false;
-              }
-
-              // Check if the scores are not greater than 11
-              if (team1_score <=-1 || team2_score <= -1) {
-                  alert("Scores cannot be lower than 0.");
-                  return false;
-              }
-      
-              // Check if one of the scores is equal to 11
-              if (team1_score != 11 && team2_score != 11) {
-                  alert("One of the scores must be equal to 11.");
-                  return false;
-              }
-      
-              // If all conditions are met, submit the form
-              document.getElementById("game_form").submit();
-          }
-      </script>
-      
+    <input type="date" id="game_date" name="game_date" value="">
+    <script>
+      // Définir la date par défaut à aujourd'hui au format yyyy-mm-dd
+      var today = new Date().toISOString().split("T")[0];
+      document.getElementById("game_date").value = today;
+    </script>
     <br>
-    <input type="submit" value="Create game" onclick="return validateForm()">
+    
+    <input type="submit" value="Create game">
   </form>
-<!-- Do more section -->
-<div class="do-more">
-  <h2>Explore more options</h2>
-  <p>Make the most of your game time with this all-in-one platform. Calculate your odds, compare your ranking, and upload your game results quickly and easily.</p>
-</div>
 
+  <!-- Section "Do more" -->
+  <div class="do-more">
+    <h2>Explore more options</h2>
+    <p>
+      Make the most of your game time with this all-in-one platform. Calculate your odds, compare your ranking, and upload your match results quickly and easily.
+    </p>
+  </div>
 
-<div class="action-grid">
-  <a href="/" class="action action2">Upload game</a>
-  <a href="/calculate_odds" class="action action2">Calculate odds</a>
-  <a href="/rating" class="action action3">Ranking</a>
-  <a href="/match_list" class="action action4">Match history</a>
-  <a href="/rating_evolution" class="action action3">Rating evolution</a>
-  <a href="/metrics" class="action action4">Players Metrics (new)</a>
-</div>
-
-
-</div>
-</body>
-</html>
-
-
-
+  <!-- Menu d'actions -->
+  <div class="action-grid">
+    <a href="/" class="action action2">Upload game</a>
+    <a href="/calculate_odds" class="action action2">Calculate odds</a>
+    <a href="/rating" class="action action3">Ranking</a>
+    <a href="/match_list" class="action action4">Match history</a>
+    <a href="/rating_evolution" class="action action3">Rating evolution</a>
+    <a href="/metrics" class="action action4">Players Metrics (new)</a>
+  </div>
 </body>
 </html>

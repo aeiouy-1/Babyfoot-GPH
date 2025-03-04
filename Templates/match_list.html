@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Match history</title>
+    <title>Match History - 1v1</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
         .action-grid {
@@ -18,17 +18,14 @@
           display: flex;
           justify-content: center;
           align-items: center;
+          text-decoration: none;
+          color: black;
+          font-size: 18px;
         }
-       
-
-     </style>
-          <body class="match-page">
-             
-                </style>
-
+    </style>
 </head>
-<body>
-    <h1>Match history</h1>
+<body class="match-page">
+    <h1>Match History (1v1)</h1>
     <p class="match-description">Please choose a month to view matches</p>
     <form method="GET" class="form-month">
         <label for="month" class="month-label">Month</label>
@@ -52,18 +49,15 @@
 
     <br>
 
-
     <table style="text-align: center;">
         <thead>
             <tr>
                 <th>ID</th>
-                <th>Player 1</th>
-                <th>Player 2</th>
-                <th class="score">Score</th>
-                <th>Player 3</th>
-                <th>Player 4</th>
-                <th class="score">Score</th>
-                <th>Last Game</th>
+                <th>Winner</th>
+                <th>Loser</th>
+                <th class="score">Winner Score</th>
+                <th class="score">Loser Score</th>
+                <th>Match Date</th>
             </tr>
         </thead>
         <tbody>
@@ -74,9 +68,7 @@
                     <td>{{ match[2] }}</td>
                     <td>{{ match[3] }}</td>
                     <td>{{ match[4] }}</td>
-                    <td>{{ match[5] }}</td>
-                    <td>{{ match[6] }}</td>
-                    <td>{{ match[7].strftime('%d-%m %H:%M') }}</td>
+                    <td>{{ match[5].strftime('%d-%m %H:%M') }}</td>
                 </tr>
             {% endfor %}
         </tbody>
@@ -84,7 +76,9 @@
 
     <div class="do-more">
         <h2>Explore more options</h2>
-        <p>Make the most of your game time with this all-in-one platform. Calculate your odds, compare your ranking, and upload your game results quickly and easily.</p>
+        <p>
+          Make the most of your game time with this all-in-one platform. Calculate your odds, compare your ranking, and upload your match results quickly and easily.
+        </p>
     </div>
 
     <div class="action-grid">

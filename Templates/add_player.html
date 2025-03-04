@@ -2,8 +2,8 @@
 <html>
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css')}}">
-  <title>Calculate odds</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+  <title>1v1 - Add Player</title>
   <style>
     .action-grid {
       display: grid;
@@ -17,41 +17,45 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      text-decoration: none;
+      color: black;
+      font-size: 18px;
     }
   </style>
   <script>
+    // Fonction de confirmation avant soumission du formulaire
     function confirmSubmit() {
-      var result = confirm("Are you sure you want to add this player?");
-      if (result) {
-        return true;
-      } else {
-        return false;
-      }
+      return confirm("Are you sure you want to add this player?");
     }
   </script>
 </head>
 <body>
-  <h1>Add players</h1>
+  <h1>Add a Player</h1>
 
+  <!-- Formulaire pour ajouter un joueur -->
   <form method="POST" onsubmit="return confirmSubmit()">
-    <label for="first_name"class="team-label">First Name:</label>
-    <input type="text" id="first_name" name="first_name"><br>
-    <label for="last_name"class="team-label">Last Name:</label>
-    <input type="text" id="last_name" name="last_name"><br>
+    <label for="first_name" class="team-label">First Name:</label>
+    <input type="text" id="first_name" name="first_name" required><br>
+    <label for="last_name" class="team-label">Last Name:</label>
+    <input type="text" id="last_name" name="last_name" required><br>
     <input type="submit" value="Add Player">
   </form>
   
-  <!-- Do more section -->
+  <!-- Section "Do more" avec quelques explications -->
   <div class="do-more">
     <h2>Explore more options</h2>
-    <p>Make the most of your game time with this all-in-one platform. Calculate your odds, compare your ranking, and upload your game results quickly and easily.</p>
+    <p>
+      Make the most of your game time with this all-in-one platform. 
+      Calculate your odds, compare your ranking, and upload your match results quickly and easily.
+    </p>
   </div>
 
+  <!-- Menu d'actions -->
   <div class="action-grid">
-    <a href="/" class="action action1">Upload game</a>
-    <a href="calculate_odds" class="action action2">Calculate odds</a>
-    <a href="/add_player" class="action action3">Add player</a>
-    <a href="/players" class="action action4">Player list</a>
+    <a href="/" class="action action1">Upload Match</a>
+    <a href="/calculate_odds" class="action action2">Calculate Odds</a>
+    <a href="/add_player" class="action action3">Add Player</a>
+    <a href="/players" class="action action4">Player List</a>
   </div>
 </body>
 </html>

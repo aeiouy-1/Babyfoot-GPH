@@ -14,8 +14,8 @@ CREATE TABLE Match (
     winning_player_id INT NOT NULL REFERENCES Player(player_id),
     losing_player_id INT NOT NULL REFERENCES Player(player_id),
     -- Ici, les scores peuvent être adaptés selon vos règles (par exemple, un match se joue jusqu'à 11 points)
-    winning_score INT NOT NULL CHECK (winning_score = 11),
-    losing_score INT NOT NULL CHECK (losing_score >= 0 AND losing_score < 11)
+    winning_score INT NOT NULL CHECK (winning_score = 10),
+    losing_score INT NOT NULL CHECK (losing_score >= 0 AND losing_score < 10)
 );
 
 -- Table de relation entre joueur et match (historique de participation)
