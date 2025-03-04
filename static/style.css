@@ -104,8 +104,8 @@ form {
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
 }
 
-.team-label {
-    /* Add styles specific to the Team 1 label */
+.player-label {
+    /* Add styles specific to the player 1 label */
     padding-top: 0.1em;
     margin-bottom: 0.3em;
     color: rgb(0, 0, 0); /* Example */
