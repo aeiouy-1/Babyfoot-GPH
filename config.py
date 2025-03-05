@@ -5,12 +5,12 @@ ENV = "prod"  # Change to "dev" if using local database
 if ENV == 'dev':
     DATABASE_CONFIG = {
         'host': "localhost",
-        'database': "babyfootgph",
-        'user': "arthurcare",
-        'password': "Hockey12"}
+        'database': "*****",
+        'user': "*****",
+        'password': "*****"}
     
 else: 
-    uri = "postgresql://fbf_gph_user:lVKWHbC3sG6P26wUOap2j0l9jREDzIs8@dpg-cv3453dumphs73a188mg-a.oregon-postgres.render.com/fbf_gph"
+    uri = "*****"
     parsed_uri = urlparse(uri)
 
     DATABASE_CONFIG = {
